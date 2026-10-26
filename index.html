@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>口语练习 · 英语 & 日语</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0b1a2e 0%, #1d2f4a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding: 16px;
+            margin: 0;
+        }
+
+        .app-container {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 48px;
+            padding: 24px 20px 28px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 1.9rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header h1 span {
+            font-size: 2rem;
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.4));
+        }
+
+        .subhead {
+            color: #aac7e0;
+            font-size: 0.9rem;
+            margin-top: 6px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        /* 语言切换按钮 */
+        .lang-tabs {
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 100px;
+            padding: 5px;
+            margin-bottom: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .lang-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 12px 0;
+            border-radius: 100px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #9bb5d4;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-family: inherit;
+            letter-spacing: 0.3px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(135deg, #3f7ab3, #2c5a8c);
+            color: white;
+            box-shadow: 0 8px 18px rgba(0, 30, 60, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+        }
+
+        .lang-btn .flag {
+            font-size: 1.4rem;
+            line-height: 1;
+        }
+
+        /* 卡片主体 */
+        .practice-card {
+            background: rgba(12, 25, 45, 0.75);
+            backdrop-filter: blur(4px);
+            border-radius: 40px;
+            padding: 28px 16px 22px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 0 30px rgba(0, 50, 100, 0.3), 0 20px 30px -10px black;
+            margin-bottom: 18px;
+            transition: all 0.2s;
+        }
+
+        .sentence-box {
+            text-align: center;
+            padding: 6px 10px 16px;
+        }
+
+        .sentence-en, .sentence-jp {
+            font-size: 1.85rem;
+            font-weight: 600;
+            line-height: 1.35;
+            color: #f0f9ff;
+            text-shadow: 0 2px 10px rgba(0, 160, 255, 0.5);
+            word-break: break-word;
+            margin-bottom: 12px;
+            min-height: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .sentence-jp {
+            font-size: 1.9rem;
+            letter-spacing: 1px;
+            color: #ffe7b0;
+            text-shadow: 0 2px 12px rgba(255, 180, 40, 0.5);
+        }
+
+        .hint-text {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #7e9ec0;
+            font-weight: 400;
+            margin-top: -6px;
+        }
+
+        /* 中文释义 */
+        .meaning {
+            font-size: 1rem;
+            color: #b0cbe6;
+            text-align: center;
+            margin-top: 10px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 8px 12px;
+            border-radius: 100px;
+            display: inline-block;
+            margin-left: auto;
+            margin-right: auto;
+            width: auto;
+            max-width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(2px);
+            font-weight: 300;
+        }
+
+        /* 控制区域 */
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 18px;
+            margin: 26px 0 20px;
+        }
+
+        .record-btn {
+            background: radial-gradient(circle at 30% 20%, #ff5f5f, #b32020);
+            border: none;
+            width: 82px;
+            height: 82px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 12px 25px rgba(200, 30, 30, 0.6), 0 0 0 2px rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.1s ease;
+            -webkit-tap-highlight-color: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            gap: 4px;
+        }
+
+        .record-btn:active {
+            transform: scale(0.94);
+            box-shadow: 0 5px 12px rgba(200, 30, 30, 0.8);
+        }
+
+        .record-btn.recording {
+            background: radial-gradient(circle at 30% 20%, #ff9f4b, #cc5500);
+            box-shadow: 0 0 0 8px rgba(255, 120, 0, 0.3), 0 10px 25px rgba(255, 100, 0, 0.6);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0.5), 0 10px 25px rgba(255, 100, 0, 0.6); }
+            70% { box-shadow: 0 0 0 12px rgba(255, 140, 0, 0), 0 10px 25px rgba(255, 100, 0, 0.6); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0), 0 10px 25px rgba(255, 100, 0, 0.6); }
+        }
+
+        .record-btn .mic-icon {
+            font-size: 1.8rem;
+            line-height: 1;
+        }
+
+        .play-btn {
+            background: radial-gradient(circle at 30% 20%, #3b8fc2, #1a5276);
+            border: none;
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.7rem;
+            box-shadow: 0 10px 20px rgba(0, 80, 150, 0.6);
+            cursor: pointer;
+            transition: all 0.1s;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .play-btn:active {
+            transform: scale(0.93);
+            box-shadow: 0 5px 12px rgba(0, 80, 150, 0.8);
+        }
+
+        .play-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            filter: grayscale(0.6);
+        }
+
+        .next-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #d9edff;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.1s;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .next-btn:active {
+            transform: scale(0.93);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 状态提示 */
+        .status {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: #a2bedb;
+            min-height: 24px;
+            margin: 8px 0 4px;
+            letter-spacing: 0.3px;
+            font-weight: 400;
+            transition: opacity 0.2s;
+        }
+
+        .status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #5f9ea0;
+            box-shadow: 0 0 8px #5f9ea0;
+        }
+
+        .status .dot.recording-dot {
+            background: #ff6b4a;
+            box-shadow: 0 0 12px #ff6b4a;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .feedback {
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 6px;
+            color: #9cd4ff;
+            min-height: 28px;
+            font-style: italic;
+            padding: 0 10px;
+            transition: all 0.2s;
+        }
+
+        /* 进度/小提示 */
+        .footer-tip {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 18px;
+            padding: 0 8px;
+            color: #6885a5;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .sentence-counter {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* 声音可视化小条 (静态装饰) */
+        .audio-wave {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            height: 24px;
+            margin: 6px 0 0;
+            opacity: 0.7;
+        }
+
+        .audio-wave span {
+            width: 4px;
+            height: 10px;
+            background: #4d8fc5;
+            border-radius: 4px;
+            animation: wave 1.2s infinite ease-in-out;
+        }
+
+        .audio-wave span:nth-child(2) { animation-delay: 0.1s; height: 18px; background: #6aa9df; }
+        .audio-wave span:nth-child(3) { animation-delay: 0.2s; height: 26px; background: #9ac7f0; }
+        .audio-wave span:nth-child(4) { animation-delay: 0.3s; height: 18px; background: #6aa9df; }
+        .audio-wave span:nth-child(5) { animation-delay: 0.4s; height: 10px; background: #4d8fc5; }
+
+        @keyframes wave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(1.6); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>
+                <span>🗣️</span> 口语练习
+            </h1>
+            <div class="subhead">英语 · 日本語 | 录音跟读</div>
+        </div>
+
+        <!-- 语言切换 -->
+        <div class="lang-tabs">
+            <button class="lang-btn active" data-lang="en" id="langEnBtn">
+                <span class="flag">🇬🇧</span> English
+            </button>
+            <button class="lang-btn" data-lang="jp" id="langJpBtn">
+                <span class="flag">🇯🇵</span> 日本語
+            </button>
+        </div>
+
+        <!-- 练习卡片 -->
+        <div class="practice-card">
+            <div class="sentence-box">
+                <div id="sentenceDisplay" class="sentence-en">How are you today?</div>
+                <div id="meaningDisplay" class="meaning">你今天好吗？</div>
+            </div>
+
+            <!-- 装饰波纹 (仅视觉) -->
+            <div class="audio-wave">
+                <span></span><span></span><span></span><span></span><span></span>
+            </div>
+
+            <!-- 控制按钮 -->
+            <div class="controls">
+                <button id="recordBtn" class="record-btn" aria-label="录音">
+                    <span class="mic-icon">🎤</span>
+                    <span id="recordLabel">REC</span>
+                </button>
+                <button id="playBtn" class="play-btn" aria-label="播放录音" disabled>
+                    ▶
+                </button>
+                <button id="nextBtn" class="next-btn" aria-label="下一句">
+                    ↻
+                </button>
+            </div>
+
+            <!-- 状态 & 反馈 -->
+            <div class="status" id="status">
+                <span class="dot" id="statusDot"></span>
+                <span id="statusText">点击麦克风开始录音</span>
+            </div>
+            <div id="feedback" class="feedback"></div>
+        </div>
+
+        <div class="footer-tip">
+            <span>🔊 回放你的发音</span>
+            <span class="sentence-counter" id="counter">1 / 6</span>
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            // ----- 句子库 (英语 + 日语) -----
+            const sentences = {
+                en: [
+                    { text: "How are you today?", meaning: "你今天好吗？" },
+                    { text: "I would like a coffee, please.", meaning: "请给我一杯咖啡。" },
+                    { text: "Where is the train station?", meaning: "火车站在哪里？" },
+                    { text: "The weather is beautiful.", meaning: "天气真好。" },
+                    { text: "Could you speak more slowly?", meaning: "你能说慢一点吗？" },
+                    { text: "Nice to meet you.", meaning: "很高兴认识你。" }
+                ],
+                jp: [
+                    { text: "おはようございます。", meaning: "早上好。" },
+                    { text: "これはいくらですか？", meaning: "这个多少钱？" },
+                    { text: "駅はどこにありますか？", meaning: "车站在哪里？" },
+                    { text: "水を一杯ください。", meaning: "请给我一杯水。" },
+                    { text: "もう一度言ってください。", meaning: "请再说一次。" },
+                    { text: "ありがとうございます。", meaning: "谢谢。" }
+                ]
+            };
+
+            // ----- 状态变量 -----
+            let currentLang = 'en';            // 'en' 或 'jp'
+            let currentIndex = 0;              // 当前句子索引
+            let isRecording = false;
+            let mediaRecorder = null;
+            let audioChunks = [];
+            let recordedBlob = null;
+            let audioPlayer = null;            // 用于播放录音的 Audio 对象
+            let recordingStream = null;
+            let isPlaying = false;             // 是否正在回放 (用于控制按钮)
+            let playTimeout = null;
+
+            // DOM 元素
+            const langEnBtn = document.getElementById('langEnBtn');
+            const langJpBtn = document.getElementById('langJpBtn');
+            const sentenceDisplay = document.getElementById('sentenceDisplay');
+            const meaningDisplay = document.getElementById('meaningDisplay');
+            const recordBtn = document.getElementById('recordBtn');
+            const playBtn = document.getElementById('playBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            const feedbackDiv = document.getElementById('feedback');
+            const counterSpan = document.getElementById('counter');
+            const recordLabel = document.getElementById('recordLabel');
+
+            // 辅助：更新句子显示
+            function updateSentence() {
+                const langData = sentences[currentLang];
+                const item = langData[currentIndex];
+                sentenceDisplay.textContent = item.text;
+                meaningDisplay.textContent = item.meaning;
+                counterSpan.textContent = `${currentIndex + 1} / ${langData.length}`;
+
+                // 根据语言调整样式
+                if (currentLang === 'jp') {
+                    sentenceDisplay.classList.remove('sentence-en');
+                    sentenceDisplay.classList.add('sentence-jp');
+                } else {
+                    sentenceDisplay.classList.remove('sentence-jp');
+                    sentenceDisplay.classList.add('sentence-en');
+                }
+
+                // 切换句子时重置录音状态 (删除旧录音)
+                resetRecordingState();
+                // 清除反馈
+                feedbackDiv.textContent = '';
+                // 停止任何正在播放的录音
+                stopPlayback();
+
+                // 更新播放按钮状态
+                playBtn.disabled = true;
+
+                // 状态提示
+                statusText.textContent = '点击麦克风开始录音';
+                statusDot.classList.remove('recording-dot');
+            }
+
+            // 重置录音相关状态
+            function resetRecordingState() {
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                }
+                if (recordingStream) {
+                    recordingStream.getTracks().forEach(track => track.stop());
+                    recordingStream = null;
+                }
+                isRecording = false;
+                recordBtn.classList.remove('recording');
+                recordLabel.textContent = 'REC';
+                statusDot.classList.remove('recording-dot');
+                audioChunks = [];
+                recordedBlob = null;
+                if (audioPlayer) {
+                    audioPlayer.pause();
+                    audioPlayer = null;
+                }
+                // 停止任何playTimeout
+                if (playTimeout) {
+                    clearTimeout(playTimeout);
+                    playTimeout = null;
+                }
+                isPlaying = false;
+                playBtn.innerHTML = '▶'; // 恢复图标
+                playBtn.disabled = true;
+            }
+
+            // 停止回放
+            function stopPlayback() {
+                if (audioPlayer && isPlaying) {
+                    audioPlayer.pause();
+                    audioPlayer.currentTime = 0;
+                }
+                isPlaying = false;
+                playBtn.innerHTML = '▶';
+                if (playTimeout) {
+                    clearTimeout(playTimeout);
+                    playTimeout = null;
+                }
+            }
+
+            // 开始录音
+            async function startRecording() {
+                // 清除之前的录音
+                if (recordedBlob) {
+                    recordedBlob = null;
+                }
+                if (audioPlayer) {
+                    audioPlayer.pause();
+                    audioPlayer = null;
+                }
+                stopPlayback();
+                playBtn.disabled = true;
+
+                try {
+                    // 请求麦克风权限
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    recordingStream = stream;
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.ondataavailable = (event) => {
+                        if (event.data.size > 0) {
+                            audioChunks.push(event.data);
+                        }
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        // 录音结束，保存 blob
+                        if (audioChunks.length > 0) {
+                            recordedBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                            // 启用播放按钮
+                            playBtn.disabled = false;
+                            statusText.textContent = '录音完成，点击播放回放';
+                            statusDot.classList.remove('recording-dot');
+                            feedbackDiv.textContent = '🎤 录音已保存，可以回放对比';
+                        } else {
+                            recordedBlob = null;
+                            playBtn.disabled = true;
+                            statusText.textContent = '录音失败，请重试';
+                        }
+                        // 清理流
+                        if (recordingStream) {
+                            recordingStream.getTracks().forEach(track => track.stop());
+                            recordingStream = null;
+                        }
+                        isRecording = false;
+                        recordBtn.classList.remove('recording');
+                        recordLabel.textContent = 'REC';
+                    };
+
+                    // 开始录音
+                    mediaRecorder.start();
+                    isRecording = true;
+                    recordBtn.classList.add('recording');
+                    recordLabel.textContent = 'STOP';
+                    statusText.textContent = '正在录音... 点击停止';
+                    statusDot.classList.add('recording-dot');
+                    feedbackDiv.textContent = '🎙️ 录音中，请朗读上面的句子';
+
+                } catch (err) {
+                    console.error('录音失败:', err);
+                    statusText.textContent = '无法访问麦克风';
+                    feedbackDiv.textContent = '⚠️ 请确保麦克风权限已开启';
+                    isRecording = false;
+                    recordBtn.classList.remove('recording');
+                    recordLabel.textContent = 'REC';
+                    statusDot.classList.remove('recording-dot');
+                    // 清理
+                    if (recordingStream) {
+                        recordingStream.getTracks().forEach(track => track.stop());
+                        recordingStream = null;
+                    }
+                }
+            }
+
+            // 停止录音
+            function stopRecording() {
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop(); // 触发 onstop
+                } else {
+                    // 如果没有正在录音，但状态标记了isRecording，恢复UI
+                    isRecording = false;
+                    recordBtn.classList.remove('recording');
+                    recordLabel.textContent = 'REC';
+                    statusDot.classList.remove('recording-dot');
+                    if (recordingStream) {
+                        recordingStream.getTracks().forEach(track => track.stop());
+                        recordingStream = null;
+                    }
+                }
+            }
+
+            // 播放录音
+            function playRecorded() {
+                if (!recordedBlob) {
+                    feedbackDiv.textContent = '没有录音，请先录音';
+                    return;
+                }
+                // 如果正在播放，停止它 (按钮图标重置等)
+                if (isPlaying && audioPlayer) {
+                    audioPlayer.pause();
+                    audioPlayer.currentTime = 0;
+                    isPlaying = false;
+                    playBtn.innerHTML = '▶';
+                    if (playTimeout) {
+                        clearTimeout(playTimeout);
+                        playTimeout = null;
+                    }
+                    return;
+                }
+
+                // 停止之前的播放
+                if (audioPlayer) {
+                    audioPlayer.pause();
+                    audioPlayer = null;
+                }
+                if (playTimeout) {
+                    clearTimeout(playTimeout);
+                    playTimeout = null;
+                }
+
+                const audioUrl = URL.createObjectURL(recordedBlob);
+                audioPlayer = new Audio(audioUrl);
+                audioPlayer.play().then(() => {
+                    isPlaying = true;
+                    playBtn.innerHTML = '⏸'; // 暂停图标，再次点击可停止
+                    statusText.textContent = '正在回放录音...';
+                    // 监听播放结束
+                    audioPlayer.onended = () => {
+                        isPlaying = false;
+                        playBtn.innerHTML = '▶';
+                        statusText.textContent = '回放结束，可重新录音或下一句';
+                        URL.revokeObjectURL(audioUrl);
+                        audioPlayer = null;
+                    };
+                }).catch(err => {
+                    console.error('播放失败:', err);
+                    feedbackDiv.textContent = '⚠️ 播放失败，请重试';
+                    isPlaying = false;
+                    playBtn.innerHTML = '▶';
+                });
+            }
+
+            // 下一句
+            function nextSentence() {
+                // 停止录音/播放状态
+                if (isRecording) {
+                    stopRecording();
+                } else {
+                    if (recordingStream) {
+                        recordingStream.getTracks().forEach(track => track.stop());
+                        recordingStream = null;
+                    }
+                }
+                stopPlayback();
+                
+                const langData = sentences[currentLang];
+                currentIndex = (currentIndex + 1) % langData.length;
+                updateSentence();
+            }
+
+            // 切换语言
+            function switchLanguage(lang) {
+                if (lang === currentLang) return;
+                // 停止录音/播放
+                if (isRecording) {
+                    stopRecording();
+                } else {
+                    if (recordingStream) {
+                        recordingStream.getTracks().forEach(track => track.stop());
+                        recordingStream = null;
+                    }
+                }
+                stopPlayback();
+                
+                currentLang = lang;
+                currentIndex = 0;  // 重置到第一句
+                // 更新按钮激活样式
+                if (lang === 'en') {
+                    langEnBtn.classList.add('active');
+                    langJpBtn.classList.remove('active');
+                } else {
+                    langJpBtn.classList.add('active');
+                    langEnBtn.classList.remove('active');
+                }
+                updateSentence();
+            }
+
+            // --- 事件绑定 ---
+
+            // 录音按钮
+            recordBtn.addEventListener('click', () => {
+                if (isRecording) {
+                    stopRecording();
+                } else {
+                    startRecording();
+                }
+            });
+
+            // 播放按钮
+            playBtn.addEventListener('click', playRecorded);
+
+            // 下一句按钮
+            nextBtn.addEventListener('click', nextSentence);
+
+            // 语言切换
+            langEnBtn.addEventListener('click', () => switchLanguage('en'));
+            langJpBtn.addEventListener('click', () => switchLanguage('jp'));
+
+            // 页面卸载时清理资源
+            window.addEventListener('beforeunload', () => {
+                if (recordingStream) {
+                    recordingStream.getTracks().forEach(track => track.stop());
+                }
+                if (audioPlayer) {
+                    audioPlayer.pause();
+                }
+                if (mediaRecorder && mediaRecorder.state === 'recording') {
+                    mediaRecorder.stop();
+                }
+            });
+
+            // 初始化显示
+            updateSentence();
+
+            // 检查浏览器是否支持录音 (简单提示)
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                statusText.textContent = '浏览器不支持录音，请使用最新版Chrome/Firefox';
+                feedbackDiv.textContent = '⚠️ 你的浏览器不支持麦克风录音，部分功能不可用';
+                recordBtn.disabled = true;
+                recordBtn.style.opacity = '0.5';
+            }
+        })();
+    </script>
+</body>
+</html>
